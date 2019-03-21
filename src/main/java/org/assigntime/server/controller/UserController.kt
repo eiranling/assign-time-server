@@ -1,27 +1,30 @@
 package org.assigntime.server.controller
 
 import org.assigntime.server.data.User
+import org.assigntime.server.data.UserDTO
 import org.assigntime.server.repository.UserRepository
 import org.springframework.data.domain.Example
 import org.springframework.data.domain.ExampleMatcher
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api")
-class UserController(private val userRepository: UserRepository) {
+class UserController(private val userRepository: UserRepository, private val bcrypt: BCryptPasswordEncoder) {
 
     @GetMapping("/users")
     fun getAllUsers(): List<User> = userRepository.findAll()
 
     @PostMapping("/users")
-    fun createNewUser(@Valid @RequestBody user: User): ResponseEntity<User> {
+    fun createNewUser(@Valid @RequestBody user: User): ResponseEntity<UserDTO> {
         return if (userRepository.exists(Example.of(User(email = user.email)))) {
-            ResponseEntity.ok(userRepository.save(user))
-        } else {
             ResponseEntity.badRequest().build()
+        } else {
+            user.password = bcrypt.encode(user.password)
+            ResponseEntity.ok(userRepository.save(user).toDto())
         }
 
     }

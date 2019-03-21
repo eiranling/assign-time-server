@@ -13,17 +13,19 @@ data class User(
 
         @get: NotBlank
         @get: Email
-        val email: String = "",
+        var email: String = "",
 
         @get: NotBlank
-        val firstName: String = "",
+        var firstName: String = "",
 
-        val lastName: String = "",
+        var lastName: String = "",
 
         @get: NotBlank
-        val password : String = ""
+        var password : String = ""
 
-)
+) {
+    fun toDto() : UserDTO = UserDTO(id, email, firstName, lastName)
+}
 
 @Entity
 data class Token (
@@ -33,8 +35,10 @@ data class Token (
         @get: NotNull
         @OneToOne
         @JoinColumn(name = "id")
-        val user: User = User()
-)
+        val userId: User = User()
+) {
+    fun toDto() : TokenDTO = TokenDTO(token, userId = userId.id)
+}
 
 // </editor-fold>
 
@@ -42,6 +46,18 @@ data class Token (
 data class Login (
         val email: String = "",
         val password: String = ""
+)
+
+data class UserDTO (
+        val id : Long,
+        var email: String,
+        var firstName: String,
+        var lastName: String
+)
+
+data class TokenDTO (
+    val token : String,
+    val userId : Long
 )
 // </editor-fold>
 
