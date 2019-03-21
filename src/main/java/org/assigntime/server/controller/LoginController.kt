@@ -48,7 +48,7 @@ class LoginController(private val tokenRepository: TokenRepository,
     @PostMapping("/logout")
     fun logout(@RequestBody token : TokenDTO) : ResponseEntity<Void> {
         val tokens = tokenRepository.findByToken(token.token)
-        val validToken = tokens.firstOrNull { it.userId.id == token.userId }
+        val validToken = tokens.firstOrNull { it.user.id == token.userId }
         return when {
             validToken != null -> {
                 tokenStore.deleteToken(token.userId)

@@ -1,5 +1,6 @@
 package org.assigntime.server.data
 
+import java.time.LocalDateTime
 import javax.persistence.*
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
@@ -35,11 +36,27 @@ data class Token (
         @get: NotNull
         @OneToOne
         @JoinColumn(name = "id")
-        val userId: User = User()
+        val user: User = User()
 ) {
-    fun toDto() : TokenDTO = TokenDTO(token, userId = userId.id)
+    fun toDto() : TokenDTO = TokenDTO(token, userId = user.id)
 }
 
+@Entity
+data class Entry (
+        @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+        val id : Long = 0,
+
+        @get: NotBlank
+        var title: String = "",
+
+        var dateTime: LocalDateTime = LocalDateTime.now(),
+
+        var recurrenceFrequency: RecurrenceFrequency,
+
+        @get: NotNull
+        @ManyToOne
+        var owner: User = User()
+)
 // </editor-fold>
 
 // <editor-fold name="DTOs">
@@ -59,5 +76,16 @@ data class TokenDTO (
     val token : String,
     val userId : Long
 )
+// </editor-fold>
+
+// <editor-fold name="Enums">
+enum class RecurrenceFrequency {
+    NONE,
+    DAILY,
+    WEEKLY,
+    FORTNIGHTLY,
+    MONTHLY,
+    YEARLY
+}
 // </editor-fold>
 
