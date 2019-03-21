@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface TokenRepository : JpaRepository<Token, String> {
     fun findByToken(token: String) : List<Token>
+    fun findByUserId(userId : Long) : List<Token>
 }

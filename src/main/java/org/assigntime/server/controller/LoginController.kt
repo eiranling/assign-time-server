@@ -33,13 +33,13 @@ class LoginController(private val tokenRepository: TokenRepository,
                 val token = if (tokenStore.retrieveToken(users[0].id) != null) {
                     tokenStore.retrieveToken(users[0].id).toString()
                 } else {
-                    tokenStore.generateAndStoreToken(users[0].id)
+                    val resultToken = tokenRepository.findByUserId(users[0].id).firstOrNull()
+                    resultToken?.token ?: tokenStore.generateAndStoreToken(users[0].id)
                 }
                 tokenRepository.save(Token(token, users[0]))
                 ResponseEntity.ok(Token(token, users[0]).toDto())
             }
             else -> {
-                System.out.println("Bad Password")
                 ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
             }
         }
@@ -48,7 +48,7 @@ class LoginController(private val tokenRepository: TokenRepository,
     @PostMapping("/logout")
     fun logout(@RequestBody token : TokenDTO) : ResponseEntity<Void> {
         val tokens = tokenRepository.findByToken(token.token)
-        val validToken = tokens.singleOrNull { it.userId.id == token.userId }
+        val validToken = tokens.firstOrNull { it.userId.id == token.userId }
         return when {
             validToken != null -> {
                 tokenStore.deleteToken(token.userId)
