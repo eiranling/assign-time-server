@@ -3,13 +3,9 @@ package org.assigntime.server.controller
 import org.assigntime.server.data.Login
 import org.assigntime.server.data.Token
 import org.assigntime.server.data.TokenDTO
-import org.assigntime.server.data.User
 import org.assigntime.server.repository.TokenRepository
 import org.assigntime.server.repository.UserRepository
 import org.assigntime.server.security.TokenStore
-import org.springframework.data.domain.Example
-import org.springframework.data.domain.ExampleMatcher
-import org.springframework.data.jpa.convert.QueryByExamplePredicateBuilder
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -17,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import javax.persistence.criteria.CriteriaBuilder
 
 @RestController
 @RequestMapping("/api")
@@ -34,11 +29,32 @@ class LoginController(private val tokenRepository: TokenRepository,
             users.isEmpty() -> {
                 ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
             }
-            bCryptPasswordEncoder.matches(loginDetails.password, users[0].password) -> ResponseEntity.ok(
-                    Token(tokenStore.generateAndStoreToken(users[0].id), users[0])
-                            .toDto())
+            bCryptPasswordEncoder.matches(loginDetails.password, users[0].password) -> {
+                val token = if (tokenStore.retrieveToken(users[0].id) != null) {
+                    tokenStore.retrieveToken(users[0].id).toString()
+                } else {
+                    tokenStore.generateAndStoreToken(users[0].id)
+                }
+                tokenRepository.save(Token(token, users[0]))
+                ResponseEntity.ok(Token(token, users[0]).toDto())
+            }
             else -> {
                 System.out.println("Bad Password")
+                ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
+            }
+        }
+    }
+
+    @PostMapping("/logout")
+    fun logout(@RequestBody token : TokenDTO) : ResponseEntity<Void> {
+        val tokens = tokenRepository.findByToken(token.token)
+        val validToken = tokens.singleOrNull { it.userId.id == token.userId }
+        return when {
+            validToken != null -> {
+                tokenStore.deleteToken(token.userId)
+                tokenRepository.delete(validToken)
+                ResponseEntity.ok().build()
+            } else -> {
                 ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
             }
         }

@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface TokenRepository : JpaRepository<Token, String>
+interface TokenRepository : JpaRepository<Token, String> {
+    fun findByToken(token: String) : List<Token>
+}

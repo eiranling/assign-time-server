@@ -14,4 +14,8 @@ class TokenStore() {
         tokenStore[userId] = token
         return token
     }
+
+    fun deleteToken(userId : Long) {
+        tokenStore.remove(userId)
+    }
 }

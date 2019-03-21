@@ -21,7 +21,7 @@ data class User(
         var lastName: String = "",
 
         @get: NotBlank
-        var password : String = ""
+        var password: String = ""
 
 ) {
     fun toDto() : UserDTO = UserDTO(id, email, firstName, lastName)

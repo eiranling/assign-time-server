@@ -16,7 +16,9 @@ import javax.validation.Valid
 class UserController(private val userRepository: UserRepository, private val bcrypt: BCryptPasswordEncoder) {
 
     @GetMapping("/users")
-    fun getAllUsers(): List<User> = userRepository.findAll()
+    fun getAllUsers(): List<UserDTO> = userRepository.findAll().map {
+        it.toDto()
+    }
 
     @PostMapping("/users")
     fun createNewUser(@Valid @RequestBody user: User): ResponseEntity<UserDTO> {
@@ -30,19 +32,19 @@ class UserController(private val userRepository: UserRepository, private val bcr
     }
 
     @GetMapping("/users/{id}")
-    fun getUserById(@PathVariable(value = "id") userId: Long): ResponseEntity<User> {
+    fun getUserById(@PathVariable(value = "id") userId: Long): ResponseEntity<UserDTO> {
         return userRepository.findById(userId).map { user ->
-            ResponseEntity.ok(user)
+            ResponseEntity.ok(user.toDto())
         }.orElse(ResponseEntity.notFound().build())
     }
 
     @PutMapping("/users/{id}")
     fun updateUserById(@PathVariable(value = "id") userId: Long,
-                       @Valid @RequestBody user: User): ResponseEntity<User> {
+                       @Valid @RequestBody user: User): ResponseEntity<UserDTO> {
         return userRepository.findById(userId).map { existingUser ->
             val updatedUser : User = existingUser
                     .copy(email = user.email, firstName = user.firstName)
-            ResponseEntity.ok().body(userRepository.save(updatedUser))
+            ResponseEntity.ok().body(userRepository.save(updatedUser).toDto())
         }.orElse(ResponseEntity.notFound().build())
     }
 
