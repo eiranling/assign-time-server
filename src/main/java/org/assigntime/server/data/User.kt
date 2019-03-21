@@ -1,6 +1,7 @@
 package org.assigntime.server.data
 
 import java.time.LocalDateTime
+import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
@@ -49,9 +50,9 @@ data class Entry (
         @get: NotBlank
         var title: String = "",
 
-        var dateTime: LocalDateTime = LocalDateTime.now(),
+        var dateTime: Date = Date(Long.MIN_VALUE),
 
-        var recurrenceFrequency: RecurrenceFrequency,
+        var recurrenceFrequency: RecurrenceFrequency = RecurrenceFrequency.NONE,
 
         @get: NotNull
         @ManyToOne
