@@ -17,21 +17,11 @@ class UserController(private val userService: UserService) {
     @PostMapping("/users")
     fun createNewUser(@Valid @RequestBody user: User): ResponseEntity<UserDTO> {
         return ResponseEntity.ok(userService.create(user))
-//        return if (userRepository.exists(Example.of(User(email = user.email)))) {
-//            ResponseEntity.badRequest().build()
-//        } else {
-//            user.password = bcrypt.encode(user.password)
-//            ResponseEntity.ok(userRepository.save(user).toDto())
-//        }
-
     }
 
     @GetMapping("/users/{id}")
     fun getUserById(@PathVariable(value = "id") userId: Long): ResponseEntity<UserDTO> {
         return ResponseEntity.ok(userService.getById(userId))
-//        return userRepository.findById(userId).map { user ->
-//            ResponseEntity.ok(user.toDto())
-//        }.orElse(ResponseEntity.notFound().build())
     }
 
     @PutMapping("/users/{id}")
