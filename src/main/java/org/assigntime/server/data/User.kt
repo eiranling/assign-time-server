@@ -1,6 +1,5 @@
 package org.assigntime.server.data
 
-import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.Email
@@ -62,7 +61,9 @@ data class Entry (
 
 // <editor-fold name="DTOs">
 data class Login (
+        @Email
         val email: String = "",
+        @get: NotBlank
         val password: String = ""
 )
 
@@ -74,8 +75,9 @@ data class UserDTO (
 )
 
 data class TokenDTO (
-    val token : String,
-    val userId : Long
+        @get: NotBlank
+        val token : String,
+        val userId : Long
 )
 // </editor-fold>
 

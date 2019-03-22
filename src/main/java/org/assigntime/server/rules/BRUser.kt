@@ -17,12 +17,22 @@ class BRUser(@Autowired private val userRepository: UserRepository) {
         return userRepository.findByIdOrNull(userId)
     }
 
-    fun saveUser(userId: Long) {
-
+    fun saveUser(user: User) {
+        userRepository.save(user)
     }
 
     fun userExists(userId: Long) : Boolean {
         return userRepository.existsById(userId)
+    }
+
+    fun userWithEmailExists(email: String): Boolean {
+        return userRepository.findByEmail(email).isNotEmpty()
+    }
+
+    fun removeUser(userId: Long) {
+        userRepository.findById(userId).map { existingUser ->
+            userRepository.delete(existingUser)
+        }
     }
 
     fun copyNonDefaults(userId : Long, newUser : User) : User {

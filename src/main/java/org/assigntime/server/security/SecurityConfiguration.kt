@@ -25,9 +25,5 @@ class SecurityConfiguration : WebSecurityConfigurerAdapter() {
                     .antMatchers(HttpMethod.POST, "/api/users", "/api/login")
                     .permitAll().and().csrf().disable()
         }
-
-
-
-
     }
 }
