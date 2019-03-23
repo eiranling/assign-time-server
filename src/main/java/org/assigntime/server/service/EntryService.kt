@@ -9,28 +9,28 @@ import org.springframework.stereotype.Service
 
 @Service
 class EntryService(@Autowired private val brEntry: BREntry,
-                   private val brToken: BRToken) : IDataService<Entry, Entry> {
-    override fun list(): List<Entry> {
+                   private val brToken: BRToken) {
+    fun list(): List<Entry> {
+        return brEntry.listAll(0)
+    }
+
+    fun getById(id: Long): Entry {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun getById(id: Long): Entry {
+    fun create(newItem: Entry): Entry {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun create(newItem: Entry): Entry {
+    fun patch(oldId: Long, newItem: Entry): Entry {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun patch(oldId: Long, newItem: Entry): Entry {
+    fun put(id: Long, newItem: Entry): Entry {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun put(id: Long, newItem: Entry): Entry {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun delete(id: Long) {
+    fun delete(id: Long) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

@@ -4,13 +4,20 @@ import org.assigntime.server.data.Login
 import org.assigntime.server.data.TokenDTO
 import org.assigntime.server.rules.BRLogin
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
+import sun.plugin.liveconnect.SecurityContextHelper
 
 @Service
-class LoginService(@Autowired private val brLogin: BRLogin) {
+class LoginService(@Autowired private val brLogin: BRLogin,
+                   private val securityContext: SecurityContext) {
+
 
     fun login(loginDetails: Login): TokenDTO {
-        return brLogin.login(loginDetails.email, loginDetails.password).toDto()
+        val tokenDto = brLogin.login(loginDetails.email, loginDetails.password).toDto()
+        return tokenDto
     }
 
     fun logout(token: TokenDTO) {

@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 @Configuration
@@ -17,6 +19,11 @@ class SecurityConfiguration : WebSecurityConfigurerAdapter() {
     @Bean
     fun tokenStore() : TokenStore {
         return TokenStore()
+    }
+
+    @Bean
+    fun securityContext() : SecurityContext {
+        return SecurityContextHolder.getContext()
     }
 
     override fun configure(http: HttpSecurity?) {
