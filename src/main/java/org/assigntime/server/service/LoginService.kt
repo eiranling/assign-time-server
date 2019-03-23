@@ -4,11 +4,8 @@ import org.assigntime.server.data.Login
 import org.assigntime.server.data.TokenDTO
 import org.assigntime.server.rules.BRLogin
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.core.context.SecurityContext
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
-import sun.plugin.liveconnect.SecurityContextHelper
 
 @Service
 class LoginService(@Autowired private val brLogin: BRLogin,
