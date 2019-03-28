@@ -17,59 +17,44 @@ class EntryController(private val entryRepository: EntryRepository,
 
     @GetMapping("/users/{id}/entries")
     fun getAllEntries(@RequestHeader(name="X-Authorization") token: String, @PathVariable(name = "id") userId : Long) : ResponseEntity<List<Entry>> {
-        entryService.list(token, userId)
-        return ResponseEntity.ok(entryRepository.findByOwner(userId))
+        return ResponseEntity.ok(entryService.list(token, userId))
     }
 
     @GetMapping("/users/{id}/entries/{entryId}")
-    fun getEntry(@PathVariable(name = "id") userId: Long,
+    fun getEntry(@RequestHeader(name="X-Authorization") token: String,
+                 @PathVariable(name = "id") userId: Long,
                  @PathVariable(name = "entryId") entryId: Long) : ResponseEntity<Entry> {
-        return entryRepository.findById(entryId).map {
-            ResponseEntity.ok(it)
-        }.orElse(ResponseEntity.notFound().build())
+        return ResponseEntity.ok(entryService.getById(token, userId, entryId))
     }
 
     @PostMapping("/users/{id}/entries")
-    fun createEntry(@PathVariable(name = "id") userId :Long,
+    fun createEntry(@RequestHeader(name="X-Authorization") token: String,
+                    @PathVariable(name = "id") userId :Long,
                     @RequestBody newEntry: Entry) : ResponseEntity<Entry> {
-        return ResponseEntity.ok(entryRepository.save(newEntry))
+        return ResponseEntity.ok(entryService.create(token, userId, newEntry))
     }
 
     @PatchMapping("/users/{id}/entries/{entryId}")
-    fun patchEntry(@PathVariable(name = "id") userID: Long,
+    fun patchEntry(@RequestHeader(name="X-Authorization") token: String,
+                   @PathVariable(name = "id") userID: Long,
                    @PathVariable(name = "entryId") entryId: Long,
                    @RequestBody updatedEntry: Entry) : ResponseEntity<Entry> {
-        return entryRepository.findById(entryId).map {
-            ResponseEntity.ok(entryRepository.save(Entry().copy(
-                    id = it.id,
-                    title = if (updatedEntry.title.isNotBlank()) updatedEntry.title else it.title,
-                    dateTime = if (updatedEntry.dateTime != Date(Long.MIN_VALUE)) updatedEntry.dateTime else it.dateTime,
-                    recurrenceFrequency = if (updatedEntry.recurrenceFrequency != RecurrenceFrequency.NONE) updatedEntry.recurrenceFrequency else it.recurrenceFrequency,
-                    owner = it.owner)))
-        }.orElse(ResponseEntity.notFound().build())
+        return ResponseEntity.ok(entryService.patch(token, userID, entryId, updatedEntry))
     }
 
     @PutMapping("/users/{id}/entries/{entryId}")
-    fun putEntry(@PathVariable(name = "id") userID: Long,
+    fun putEntry(@RequestHeader(name="X-Authorization") token: String,
+                 @PathVariable(name = "id") userID: Long,
                    @PathVariable(name = "entryId") entryId: Long,
                    @RequestBody updatedEntry: Entry) : ResponseEntity<Entry> {
-        return entryRepository.findById(entryId).map {
-            ResponseEntity.ok(entryRepository.save(Entry().copy(
-                    id = it.id,
-                    title = updatedEntry.title,
-                    dateTime = updatedEntry.dateTime,
-                    recurrenceFrequency = updatedEntry.recurrenceFrequency,
-                    owner = it.owner)))
-        }.orElse(ResponseEntity.notFound().build())
+        return ResponseEntity.ok(entryService.put(token, userID, entryId, updatedEntry))
     }
 
     @DeleteMapping("/users/{id}/entries/{entryId}")
-    fun deleteEntry(@PathVariable(name = "id") userID: Long,
-                    @PathVariable(name = "entryId") entryId: Long,
-                    @RequestBody updatedEntry: Entry) : ResponseEntity<Void> {
-        return entryRepository.findById(entryId).map { existingEntry ->
-            entryRepository.delete(existingEntry)
-            ResponseEntity<Void>(HttpStatus.OK)
-        }.orElse(ResponseEntity.notFound().build())
+    fun deleteEntry(@RequestHeader(name="X-Authorization") token: String,
+                    @PathVariable(name = "id") userID: Long,
+                    @PathVariable(name = "entryId") entryId: Long) : ResponseEntity<Void> {
+        entryService.delete(token, userID, entryId)
+        return ResponseEntity.ok().build()
     }
 }

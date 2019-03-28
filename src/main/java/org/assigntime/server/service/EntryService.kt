@@ -32,16 +32,25 @@ class EntryService(@Autowired private val brEntry: BREntry,
         throw UnauthorizedException()
     }
 
-    fun patch(oldId: Long, newItem: Entry): Entry {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun patch(token: String, userId: Long, entryId: Long, newItem: Entry): Entry {
+        if (brToken.validateTokenBelongsToUser(token, userId)) {
+            return brEntry.patch(entryId, newItem)
+        }
+        throw UnauthorizedException()
     }
 
-    fun put(id: Long, newItem: Entry): Entry {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun put(token: String, userId: Long, id: Long, newItem: Entry) : Entry {
+        if (brToken.validateTokenBelongsToUser(token, userId)) {
+            return brEntry.put(id, newItem)
+        }
+        throw UnauthorizedException()
     }
 
-    fun delete(id: Long) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun delete(token:String, userId: Long, id: Long) {
+        if (brToken.validateTokenBelongsToUser(token, userId)) {
+            return brEntry.delete(id)
+        }
+        throw UnauthorizedException()
     }
 
 }
