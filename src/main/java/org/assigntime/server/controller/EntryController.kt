@@ -3,6 +3,7 @@ package org.assigntime.server.controller
 import org.assigntime.server.data.Entry
 import org.assigntime.server.data.RecurrenceFrequency
 import org.assigntime.server.repository.EntryRepository
+import org.assigntime.server.service.EntryService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -11,10 +12,12 @@ import java.util.*
 
 @RestController
 @RequestMapping("/api")
-class EntryController(private val entryRepository: EntryRepository) {
+class EntryController(private val entryRepository: EntryRepository,
+                      private val entryService: EntryService) {
 
     @GetMapping("/users/{id}/entries")
-    fun getAllEntries(@PathVariable(name = "id") userId : Long) : ResponseEntity<List<Entry>> {
+    fun getAllEntries(@RequestHeader(name="X-Authorization") token: String, @PathVariable(name = "id") userId : Long) : ResponseEntity<List<Entry>> {
+        entryService.list(token, userId)
         return ResponseEntity.ok(entryRepository.findByOwner(userId))
     }
 

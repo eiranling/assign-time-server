@@ -36,12 +36,12 @@ class BRLogin(@Autowired private val tokenRepository: TokenRepository,
         }
     }
 
-    fun logout(token: String, userId: Long) {
+    fun logout(token: String) {
+
         val tokens = tokenRepository.findByToken(token)
-        val validToken = tokens.firstOrNull { it.user.id == userId }
+        val validToken = tokens.firstOrNull()
         return when {
             validToken != null -> {
-                tokenStore.deleteToken(userId)
                 tokenRepository.delete(validToken)
             }
             else -> {

@@ -10,4 +10,12 @@ class BREntry(@Autowired private val entryRepository: EntryRepository) {
     fun listAll(userId: Long): List<Entry> {
         return entryRepository.findByOwner(userId)
     }
+
+    fun getOne(entryId: Long) : Entry {
+        return entryRepository.getOne(entryId)
+    }
+
+    fun create(newEntry: Entry) : Entry {
+        return entryRepository.save(newEntry)
+    }
 }

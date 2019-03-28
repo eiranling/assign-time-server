@@ -4,10 +4,7 @@ import org.assigntime.server.data.Login
 import org.assigntime.server.data.TokenDTO
 import org.assigntime.server.service.LoginService
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
@@ -19,7 +16,7 @@ class LoginController(private val loginService: LoginService) {
     }
 
     @PostMapping("/logout")
-    fun logout(@Valid @RequestBody token: TokenDTO): ResponseEntity<Void> {
+    fun logout(@Valid @RequestHeader(name = "X-Authorization") token: String): ResponseEntity<Void> {
         loginService.logout(token)
         return ResponseEntity.ok().build()
     }

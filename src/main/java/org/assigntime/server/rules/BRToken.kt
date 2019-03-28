@@ -19,4 +19,17 @@ class BRToken(@Autowired private val tokenRepository: TokenRepository) {
             }
         }
     }
+
+    fun validateToken(token: String) : Boolean {
+        val tokens = tokenRepository.findByToken(token)
+        return tokens.any()
+    }
+
+    fun validateTokenBelongsToUser(token: String, userId: Long) : Boolean {
+        val tokens = tokenRepository.findByToken(token)
+        if (tokens.size == 1) {
+            return tokens.first().user.id == userId
+        }
+        return false
+    }
 }
