@@ -2,9 +2,11 @@ stages:
   - build
   - test
   - deploy
+  - docker-build
+  - docker-deploy
 
 docker-build:
-  stage: build
+  stage: docker-build
   script:
     - docker-compose build
 
@@ -23,7 +25,7 @@ release-artifacts:
       - ./build/resources/main/*.properties
 
 deploy-docker:
-  stage: deploy
+  stage: docker-deploy
   script:
     - docker-compose down --remove-orphans
     - docker-compose up -d
