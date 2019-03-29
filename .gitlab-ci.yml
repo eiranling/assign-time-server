@@ -3,6 +3,11 @@ stages:
   - test
   - deploy
 
+docker-build:
+  stage: build
+  script:
+    - docker-compose build
+
 junit:
   stage: test
   script:
@@ -16,3 +21,9 @@ release-artifacts:
     paths:
       - ./build/libs/*.jar
       - ./build/resources/main/*.properties
+
+deploy-docker:
+  stage: deploy
+  script:
+    - docker-compose down --remove-orphans
+    - docker-compose up -d
