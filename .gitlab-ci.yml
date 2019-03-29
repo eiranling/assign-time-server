@@ -2,13 +2,7 @@ stages:
   - build
   - test
   - deploy
-  - docker-build
   - docker-deploy
-
-docker-build:
-  stage: docker-build
-  script:
-    - docker-compose build
 
 junit:
   stage: test
@@ -19,6 +13,7 @@ release-artifacts:
   stage: deploy
   script:
     - ./gradlew build
+    - docker-compose build
   artifacts:
     paths:
       - ./build/libs/*.jar
