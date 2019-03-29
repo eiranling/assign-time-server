@@ -3,7 +3,7 @@ services:
   web:
     build: .
     ports:
-      - "${$SERVER_PORT}:4941"
+      - "${SERVER_PORT}:4941"
     restart: on-failure
 networks:
   default:
