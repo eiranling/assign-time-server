@@ -13,7 +13,8 @@ import java.util.*
 class BREntry(@Autowired private val entryRepository: EntryRepository,
               private val userRepository: UserRepository) {
     fun listAll(userId: Long): List<Entry> {
-        return entryRepository.findByOwner(userId)
+        val user = userRepository.findById(userId)
+        return entryRepository.findByOwner(user.get())
     }
 
     fun getOne(entryId: Long) : Entry {

@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface EntryRepository : JpaRepository<Entry, Long> {
-    fun findByOwner(userId: Long) : List<Entry>
+    fun findByOwner(user: User) : List<Entry>
 }
