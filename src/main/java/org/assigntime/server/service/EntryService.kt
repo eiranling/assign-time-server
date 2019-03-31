@@ -27,7 +27,7 @@ class EntryService(@Autowired private val brEntry: BREntry,
 
     fun create(token: String, userId: Long, newItem: Entry): Entry {
         if (brToken.validateTokenBelongsToUser(token, userId)) {
-            return brEntry.create(newItem)
+            return brEntry.create(newItem, userId)
         }
         throw UnauthorizedException()
     }

@@ -49,11 +49,14 @@ data class Entry (
         @get: NotBlank
         var title: String = "",
 
-        var dateTime: Date = Date(Long.MIN_VALUE),
+        var startDateTime: Date = Date(Long.MIN_VALUE),
+
+        var endDateTime: Date = Date(Long.MIN_VALUE),
 
         var recurrenceFrequency: RecurrenceFrequency = RecurrenceFrequency.NONE,
 
-        @get: NotNull
+        var calendarType: CalendarType = CalendarType.ASSIGNMENTS,
+
         @ManyToOne
         var owner: User = User()
 )
@@ -90,5 +93,18 @@ enum class RecurrenceFrequency {
     MONTHLY,
     YEARLY
 }
-// </editor-fold>
 
+enum class CalendarType(val value: Int) {
+    ASSIGNMENTS(0),
+    PERSONAL(1),
+    TIMETABLE(2);
+
+    companion object {
+        fun fromInt(from: Int) : CalendarType? {
+            return values().firstOrNull { it.value == from }
+        }
+    }
+}
+
+// </editor-fold>
+  
