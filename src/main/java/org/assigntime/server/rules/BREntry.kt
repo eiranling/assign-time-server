@@ -1,10 +1,13 @@
 package org.assigntime.server.rules
 
+import org.apache.commons.logging.Log
+import org.apache.logging.log4j.Logger
 import org.assigntime.server.data.Entry
 import org.assigntime.server.data.RecurrenceFrequency
 import org.assigntime.server.exceptions.EntryNotFoundException
 import org.assigntime.server.repository.EntryRepository
 import org.assigntime.server.repository.UserRepository
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.*
@@ -45,6 +48,7 @@ class BREntry(@Autowired private val entryRepository: EntryRepository,
 
     fun put(entryId: Long, newEntry: Entry) : Entry {
         val oldEntry = entryRepository.findById(entryId)
+        LoggerFactory.getLogger(this.javaClass).debug("PUT Request received")
         if (oldEntry.isPresent) {
             val entry = Entry().copy(
                     id = entryId,
@@ -54,7 +58,7 @@ class BREntry(@Autowired private val entryRepository: EntryRepository,
                     endDateTime = if (newEntry.endDateTime != Date(Long.MIN_VALUE)) newEntry.endDateTime else oldEntry.get().endDateTime,
                     title = newEntry.title
             )
-            entryRepository.save(entry)
+            return entryRepository.save(entry)
         }
         throw EntryNotFoundException()
     }
